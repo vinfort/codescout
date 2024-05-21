@@ -65,7 +65,7 @@ def main():
     global debug
 
     parser = argparse.ArgumentParser(description='API RESTful pour codescout')
-    parser.add_argument('--config', '-c', type=str, required=False,
+    parser.add_argument('--config', '-c', type=str, required=False, default=config_file,
         help='Nom du fichier de configuration')
     parser.add_argument('--debug', action='store_true', required=False, default=False,
         help="Indique si l'application est démarrée en mode de déboguage")
