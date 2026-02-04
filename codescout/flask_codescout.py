@@ -1,31 +1,32 @@
-#!/usr/bin/env python3
 
-"""
-Ce module permet d'appeler la fonction codescout a l'aide d'une requete http
-en faisant appel a la librairie flask pour offrir un API RESTful
-"""
+# A very simple Flask Hello World app for you to get started with...
 
 import argparse
 import configparser
-from flask import Flask, send_file, request
+from flask import Flask, send_file, request, render_template
 from codescout import codescout
 
-# Configuration par defaut
+# Chemin absolu du fichier de configuration
+config_file = '/home/scouts/codescout/codescout/codescout.ini'
+
+# Chemin absolu des fichiers statiques
+template_folder = '/var/www/templates'
+
+# Création de l'objet dans lequel on lira la configuration
+# En en faisant une variable globale on évite d'avoir à lire la config
+# lors de chaque requête
 config = configparser.ConfigParser()
-config_file = 'codescout.ini'
 
-# Indique si on est en mode debug
-debug = False
+# Démarrage de l'application flask
+app = Flask(__name__, template_folder=template_folder)
 
-# Serveur http
-app = Flask(__name__)
-
+# Appel de codescout via Flask
 @app.route('/codescout')
 def http_codescout():
     """
     Permet d'appeler la fonction codescout a l'aide d'une requete http
     """
-    # Lecture de la config par defaut la premiere fois
+    # Lecture de la config par defaut au démarrage
     if config.sections() == []:
         config.read(config_file)
         config['usager'] = {}
@@ -36,16 +37,7 @@ def http_codescout():
             config['usager'][k] = param
         else:
             config['usager'][k] = config['defaut'][k]
-    # Affichage de la configuration
-    if debug:
-        print("Démarrage du serveur http")
-        print("Configuration par défaut:")
-        for s in config.sections():
-            print(f"[{s}]")
-            for k in config[s].keys():
-                print(f"{k}={config[s][k]}")
-            print("")
-    # Appeler codecoutvotre script Python pour générer l'image
+    # Appeler codescout
     img = codescout(
             config['usager']['message'],
             config['usager']['code'],
@@ -55,11 +47,24 @@ def http_codescout():
             bordure = int(config['usager']['bordure']),
             legende = config['usager']['legende'],
             fonte = config['usager']['fonte'],
-            decoder = (config['usager']['decoder'] == '1'))
+            decoder = (config['usager']['decoder'] == '1'),
+            decalage = int(config['usager']['decalage']),
+            fontes = config['fontes'])
     img.save(config['sortie']['image'])
     # Renvoyer l'image générée au client
     return send_file(config['sortie']['image'], mimetype='image/png')
 
+# Aide en ligne
+@app.route('/')
+def http_aide():
+    return render_template('codescout.html')
+
+# GUI
+@app.route('/gui/')
+def http_gui():
+    return render_template('codescout_gui.html')
+
+# Pour utilisation en mode ligne de commande avec le serveur de développement
 def main():
     global config_file
     global debug
@@ -77,7 +82,7 @@ def main():
     if args.config is not None:
         config_file = args.config
 
-    # Lecture du fichier de configuration    
+    # Lecture du fichier de configuration
     config.read(config_file)
     config['usager'] = {}
 

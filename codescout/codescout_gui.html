@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <title>Encodage de messages à l'aide de la librairie codescout</title>
+    <style>
+        /* Styles globaux */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
+            color: #2e7d32; /* Vert foncé */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* En-tête */
+        header {
+            background-color: #388e3c; /* Vert scout */
+            color: #fff;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header a {
+            color: white !important;
+            text-decoration: underline; /* Optionnel, pour garder l'effet de lien */
+        }
+
+        header a:visited {
+            color: white !important;
+        }
+
+        header a:hover {
+            color: #ddd; /* Optionnel, pour un léger effet au survol */
+        }
+
+        /* Conteneur principal */
+        main {
+            background-color: white;
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #388e3c; /* Vert scout */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2e7d32;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .option {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .option.form-group {
+            display: flex;
+            align-items: left;
+            gap: 5px; /* Espacement entre le texte et la case */
+        }
+
+        .option.form-group label {
+            margin-bottom: 0; /* Supprime la marge par défaut du label */
+        }
+        #status {
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        #result {
+            margin-top: 20px;
+            max-width: 100%;
+            border: 2px solid #388e3c; /* Bordure verte */
+            border-radius: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        Encodage de messages scouts à l'aide de l'API <a href="https://scouts.pythonanywhere.com">codescout</a>
+    </header>
+
+    <main>
+        <div class="form-group">
+            <label for="query">Message à encoder (utilisez seulement des lettres et des espaces, insérez un ":" pour changer de ligne) </label>
+            <input type="text" id="query" placeholder="Entrez votre message...">
+        </div>
+
+        <div class="options">
+            <div class="option form-group">
+                <label for="code">Type de Code</label>
+                <select id="code" onchange="toggleDecalage()">
+                    <option value="alphabet">Alphabet</option>
+                    <option value="avocat">Avocat</option>
+                    <option value="braille">Braille</option>
+                    <option value="chinois">Chinois</option>
+                    <option value="hieroglyphe">Hiéroglyphe</option>
+                    <option value="escalier">Escalier</option>
+                    <option value="morse">Morse</option>
+                    <option value="musical">Musical</option>
+                    <option value="samourai">Samourai</option>
+                    <option value="semaphore">Sémaphore</option>
+                    <option value="soleil" selected>Soleil</option>
+                    <option value="telephone">Téléphone</option>
+                    <option value="tictactoe">Tic-Tac-Toe</option>
+
+                </select>
+            </div>
+
+            <div class="option form-group">
+                <label for="taille">Taille (px)</label>
+                <input type="number" id="taille" value="8" min="5" max="50">
+            </div>
+
+            <div class="option form-group">
+                <label for="interligne">Interligne</label>
+                <input type="number" id="interligne" value="1" min="0" max="10">
+            </div>
+
+            <div class="option form-group" id="decalage-container" style="display: none;">
+                <label for="decalage">Décalage</label>
+                <input type="number" id="decalage" value="3" min="-25" max="25">
+            </div>
+
+            <div class="option form-group" id="decoder-checkbox">
+                <label for="decoder">Afficher le message décodé ?</label>
+                <input type="checkbox" id="decoder" checked>
+            </div>
+
+        </div>
+
+        <button onclick="fetchImage()">Générer</button>
+        <p id="status"></p>
+        <img id="result" alt="Résultat de l'API">
+        <p id="image-url" style="display: none;">
+            URL de l'image : <a id="image-link" href="#" target="_blank"></a>
+        </p>
+        <button id="downloadBtn" style="display: none;">Télécharger l'image</button>
+
+    </main>
+
+    <script>
+        function toggleDecalage() {
+            const code = document.getElementById('code').value;
+            const decalageContainer = document.getElementById('decalage-container');
+            decalageContainer.style.display = (code === 'alphabet') ? 'block' : 'none';
+        }
+
+        function fetchImage() {
+            query = document.getElementById('query').value.trim();
+            const code = document.getElementById('code').value;
+            const taille = document.getElementById('taille').value;
+            const interligne = document.getElementById('interligne').value;
+            const decoder = document.getElementById('decoder').checked ? '1' : '0';  // Vérifie si la case est cochée
+            const statusDiv = document.getElementById('status');
+            const resultImg = document.getElementById('result');
+            const imageUrlContainer = document.getElementById('image-url');
+            const imageLink = document.getElementById('image-link');
+
+            if (!query) {
+                query = "ABCDEFGHIJKLM:NOPQRSTUVWXYZ";
+            }
+
+            statusDiv.textContent = "Chargement...";
+            resultImg.style.display = "none";
+            imageUrlContainer.style.display = "none";
+
+            let url = `https://scouts.pythonanywhere.com/codescout?message=${encodeURIComponent(query)}&code=${code}&taille=${taille}&interligne=${interligne}&decoder=${decoder}`;
+
+            if (code === 'alphabet') {
+                const decalage = document.getElementById('decalage').value;
+                url += `&decalage=${decalage}`;
+            }
+
+            resultImg.src = url;
+            imageLink.href = url;
+            imageLink.textContent = url;
+
+            resultImg.onload = () => {
+                statusDiv.textContent = "Résultat :";
+                resultImg.style.display = "block";
+                imageUrlContainer.style.display = "block";
+            };
+            resultImg.onerror = () => {
+                statusDiv.textContent = "Erreur lors du chargement de l'image.";
+                resultImg.style.display = "none";
+                imageUrlContainer.style.display = "none";
+            };
+        }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const imageElement = document.getElementById("result"); // Remplace avec l'ID de ton image
+    const downloadButton = document.getElementById("downloadBtn");
+
+    if (imageElement && downloadButton) {
+        imageElement.addEventListener("load", function () {
+            downloadButton.style.display = "block"; // Affiche le bouton après génération
+        });
+
+        downloadButton.addEventListener("click", function () {
+            const link = document.createElement("a");
+            link.href = imageElement.src;
+            link.download = "codescout.png";  // Nom du fichier téléchargé
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
+});
+    </script>
+
+</body>
+</html>

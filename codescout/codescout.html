@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <title>Documentation de l'API RESTful Codescout</title>
+
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F4F4F4;
+            color: #333;
+        }
+
+        /* Style du header */
+        .header {
+            background-color: #007A33;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Conteneur principal */
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1, h2, h3 {
+            color: #007A33;
+        }
+
+        /* Boutons et liens */
+        .button {
+            display: inline-block;
+            background-color: #007A33;
+            color: white;
+            padding: 10px 15px;
+            margin: 5px 0;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .button:hover {
+            background-color: #005922;
+        }
+
+        a {
+            color: #007A33;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Table des paramètres */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007A33;
+            color: white;
+        }
+
+        /* Bloc de code */
+        pre {
+            background: #EEE;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background: #007A33;
+            color: white;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Documentation de l'API RESTful de Codescout</h1>
+
+    <h2>Introduction</h2>
+    <p>Bienvenue dans l'API RESTful de Codescout! Cette API permet de générer des images contenant des messages codés à l'aide de divers codes scouts. Vous pouvez utiliser les endpoints pour créer et récupérer ces images à partir de requêtes HTTP.</p>
+
+    <h2>Interface usager</h2>
+    <p>Une interface usager est disponible pour accéder aux fonctionnalités de l'API</p>
+    <a href="https://scouts.pythonanywhere.com/gui">https://scouts.pythonanywhere.com/gui</a>
+
+    <h2>URL de base</h2>
+    <p>Toutes les requêtes API doivent être faites à la base URL suivante:</p>
+    <code>https://scouts.pythonanywhere.com/</code>
+
+    <h2>Endpoints</h2>
+
+    <div class="endpoint">
+        <p><strong>URL</strong>: <code>/codescout</code></p>
+        <p><strong>Méthode</strong>: <code>GET</code></p>
+        <p><strong>Description</strong>: Ce endpoint permet de générer une image avec un message codé selon le code scout spécifié.</p>
+
+        <h4>Paramètres</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Paramètre</th>
+                    <th>Type</th>
+                    <th>Requis</th>
+                    <th>Défaut</th>
+                    <th>Description</th>
+                    <th>Exemple</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>message</td>
+                    <td>string</td>
+                    <td>Oui</td>
+                    <td></td>
+                    <td>Le message à encoder</td>
+                    <td>message=Toujours%Prêt</td>
+                </tr>
+                <tr>
+                    <td>code</td>
+                    <td>string</td>
+                    <td>Oui</td>
+                    <td></td>
+                    <td>Le code à utiliser pour encoder le message</td>
+                    <td>code=musical</td>
+                </tr>
+                <tr>
+                    <td>decalage</td>
+                    <td>integer</td>
+                    <td>Non</td>
+                    <td></td>
+                    <td>Décalage à utiliser pour le code alphabet</td>
+                    <td>decalage=8</td>
+                </tr>
+                <tr>
+                    <td>delimiteur</td>
+                    <td>string</td>
+                    <td>Non</td>
+                    <td>:</td>
+                    <td>Caractère utilisé pour diviser le message en plusieurs lignes</td>
+                    <td>delimiteur=:</td>
+                </tr>
+                <tr>
+                    <td>taille</td>
+                    <td>integer</td>
+                    <td>Non</td>
+                    <td>8</td>
+                    <td>Taille des éléments du message en pixels</td>
+                    <td>taille=10</td>
+                </tr>
+                <tr>
+                    <td>interligne</td>
+                    <td>integer</td>
+                    <td>Non</td>
+                    <td>1</td>
+                    <td>Espace entre les lignes de code pour faciliter le décodage</td>
+                    <td>interligne=2</td>
+                </tr>
+                <tr>
+                    <td>bordure</td>
+                    <td>integer</td>
+                    <td>Non</td>
+                    <td>1</td>
+                    <td>Taille de la bordure en pixels</td>
+                    <td>bordure=2</td>
+                </tr>
+                <tr>
+                    <td>legende</td>
+                    <td>string</td>
+                    <td>Non</td>
+                    <td></td>
+                    <td>Légende ajoutée en bas à gauche de l'image</td>
+                    <td>legende=Exemple</td>
+                </tr>
+                <tr>
+                    <td>fonte</td>
+                    <td>string</td>
+                    <td>Non</td>
+                    <td>DejaVuSansMono.ttf</td>
+                    <td>Nom de la police à utiliser pour la légende et le texte décodé</td>
+                    <td>fonte=OpenSans-Regular.ttf</td>
+                </tr>
+                <tr>
+                    <td>decoder</td>
+                    <td>boolean</td>
+                    <td>Non</td>
+                    <td>1</td>
+                    <td>Indique s'il faut afficher le message décodé (1 ou 0)</td>
+                    <td>decoder=1</td>
+                </tr>
+            </tbody>
+        </table>
+
+<h4>Codes disponibles</h4>
+
+<ul>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=alphabet&decalage=1&interligne=3">code alphabet</a>: chaque lettre est décalée par un nombre de lettres dans l'alphabet défini par le paramètre "décalage" (1 dans cet exemple)</li>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=avocat&interligne=3">code avocat</a>: équivalent au code alphabet avec un décalage de +8</li>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=braille&interligne=3">alphabet braille</a>: des points noirs illustrent la position des bosses dans le papier</li>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=chinois&interligne=3">code chinois</a>: chaque lettre est remplacée par un certain nombre de lignes horizontales et verticales</li>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=escalier&interligne=3">code escalier</a>: équivalent au code alphabet avec un décalage de -10</li>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=hieroglyphe&interligne=3">code hieroglyphe</a>: chaque lettre est remplacée par la position qu'elle occupe dans une grille</li>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=morse&interligne=3">code morse</a>: chaque lettre est remplacée par une séquence de montagnes hautes ou basses, représentant les sons longs et courts du code morse</li>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=musical">code musical</a>: chaque lettre est remplacée par une note de musique où les lettres de A-M deviennent des blanches
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=samourai&interligne=3">code samourai</a>: apparenté au code chinois, chaque lettre est remplacée par un certain nombre de lignes horizontales et verticales</li>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=semaphore&interligne=3">code du sémaphore</a>: le code illustre la position des bras</li>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=soleil">code soleil</a>: chaque lettre est remplacée par un soleil dont le nombre de rayons indique la position dans l'alphabet</li>
+        entre DO central et LA aigu et les lettres de N-Z deviennent des noires entre DO central et LA aigu </li>
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=telephone">code téléphone</a>: chaque lettre est remplacée par sa position sur un clavier téléphonique
+    <li><a href="https://scouts.pythonanywhere.com/codescout?code=tictactoe">code tic-tac-toc</a>: semblable au code téléphone, chaque lettre est remplacée par sa position sur une grille de tic-tac-toe
+</ul>
+
+        <h4>Exemple de Requête</h4>
+        <pre><code><a href="https://scouts.pythonanywhere.com/codescout?message=De%20notre%20mieux&code=musical&taille=10&bordure=2&legende=Légende&decoder=1&interligne=3">GET https://scouts.pythonanywhere.com/codescout?message=De%20notre%20mieux&code=musical&taille=10&bordure=2&legende=Légende&decoder=1&interligne=3</a></code></pre>
+
+        <h4>Réponse</h4>
+        <p><strong>Mime Type</strong>: <code>image/png</code></p>
+        <p><strong>Description</strong>: Une image PNG contenant le message encodé selon le code scout spécifié.</p>
+    </div>
+
+    <h2>Exemples</h2>
+
+    <p>Générer une image simple:</p>
+    <pre><code><a href="https://scouts.pythonanywhere.com/codescout?message=Bonjour&code=soleil">GET https://scouts.pythonanywhere.com/codescout?message=Bonjour&code=soleil</a></code></pre>
+
+    <p>Ajouter des options de personnalisation:</p>
+    <pre><code><a href="https://scouts.pythonanywhere.com/codescout?message=Toujours%20Prêt&code=musical&taille=12&bordure=3&legende=Scouts%20du%20Canada&decoder=1&interligne=3">GET https://scouts.pythonanywhere.com/codescout?message=Toujours%20Prêt&code=musical&taille=12&bordure=3&legende=Scouts%20du%20Canada&decoder=1&interligne=3</a></code></pre>
+
+    <p>Encoder "Baden Powell" sur deux lignes avec le code musical:</p>
+    <pre><code><a href="https://scouts.pythonanywhere.com/codescout?message=Baden:Powell&code=musical">GET https://scouts.pythonanywhere.com/codescout?message=Baden:Powell&code=musical</a></code></pre>
+
+    <p>Encoder "Baden Powell" sur deux lignes avec le code soleil en augmentant la taille et en changeant la fonte:</p>
+    <pre><code><a href="https://scouts.pythonanywhere.com/codescout?message=Baden:Powell&code=soleil&taille=15&fonte=Cousine-Regular.ttf">GET https://scouts.pythonanywhere.com/codescout?message=Baden:Powell&code=soleil&taille=15&fonte=Cousine-Regular.ttf</a></code></pre>
+
+    <p>Encoder "Justice Respect Confiance Dépassement" sur quatre lignes avec le code soleil, ne pas afficher le message décodé et augmenter l'espace entre les lignes:</p>
+    <pre><code><a href="https://scouts.pythonanywhere.com/codescout?message=Justice:Respect:Confiance:Dépassement&code=soleil&decoder=0&interligne=3">GET https://scouts.pythonanywhere.com/codescout?message=Justice:Respect:Confiance:Dépassement&code=soleil&decoder=0&interligne=3</a></code></pre>
+
+    <h2>Code source</h2>
+    <p>Le code source se trouve sur le github de l'Association des Scouts du Canada:</p>
+    <p><a href="https://github.com/ASC-Scouts/codescout">https://github.com/ASC-Scouts/codescout</a></p>
+</body>
+
+</html>
